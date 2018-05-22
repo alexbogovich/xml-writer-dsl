@@ -121,7 +121,7 @@ class DslXMLStreamWriter(writer: XMLStreamWriter?) : IndentingXMLStreamWriter(wr
         element(this.first, this.second, lambda)
     }
 
-    infix fun String.attr(value: Any) {
+    override infix fun String.attr(value: Any) {
         if (this.contains(":")) {
             val tag = this.split(":")
             attribute(namespaceMapping[tag[0]]!!, tag[1], value)
