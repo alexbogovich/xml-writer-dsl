@@ -14,4 +14,4 @@ out/
 gradle-app.setting
 !gradle-wrapper.jar
 .gradletasknamecache
-excel-reader-kotlin.iml
+*.imi
