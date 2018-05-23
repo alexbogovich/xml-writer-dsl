@@ -2,6 +2,8 @@ import org.jetbrains.kotlin.gradle.dsl.Coroutines
 
 plugins {
     kotlin("jvm") version "1.2.41"
+    `maven-publish`
+    maven
 }
 
 dependencies {
