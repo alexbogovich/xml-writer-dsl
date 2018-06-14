@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.Coroutines
 
 plugins {
-    kotlin("jvm") version "1.2.41"
+    kotlin("jvm") version "1.2.50"
     `maven-publish`
 }
 
@@ -17,11 +17,22 @@ repositories {
 }
 
 group = "io.github.alexbogovich"
-version = "0.1"
+version = "0.2"
 
 
 kotlin {
     experimental {
         coroutines = Coroutines.ENABLE
+    }
+}
+
+publishing {
+    (publications) {
+        "mavenJava"(MavenPublication::class) {
+            groupId = "${project.group}"
+            artifactId = project.name
+            version = "${project.version}"
+            artifact(tasks["jar"])
+        }
     }
 }
