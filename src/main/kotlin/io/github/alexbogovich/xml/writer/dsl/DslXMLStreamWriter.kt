@@ -1,6 +1,7 @@
 package io.github.alexbogovich.xml.writer.dsl
 
 import com.sun.xml.txw2.output.IndentingXMLStreamWriter
+import io.github.alexbogovich.xml.writer.dsl.utils.isContainExternalPrefix
 import mu.KLogging
 import java.io.OutputStream
 import java.nio.file.Files
@@ -89,7 +90,7 @@ class DslXMLStreamWriter(writer: XMLStreamWriter?) : IndentingXMLStreamWriter(wr
     }
 
     infix operator fun String.invoke(value: Any) {
-        if (this.contains(":")) {
+        if (this.isContainExternalPrefix()) {
             val tag = this.split(":")
             element(namespaceMapping[tag[0]]!!, tag[1], value)
         } else {
@@ -98,7 +99,7 @@ class DslXMLStreamWriter(writer: XMLStreamWriter?) : IndentingXMLStreamWriter(wr
     }
 
     infix operator fun String.invoke(lambda: xmlStreamLambda) {
-        if (!namespaceMapping.isEmpty() && this.contains(":")) {
+        if (!namespaceMapping.isEmpty() && this.isContainExternalPrefix()) {
             val tag = this.split(":")
             if (!namespaceMapping.isEmpty() && !namespaceMapping.contains(tag[0])) {
                 throw RuntimeException("Prefix ${tag[0]} not in $namespaceMapping")
@@ -122,8 +123,11 @@ class DslXMLStreamWriter(writer: XMLStreamWriter?) : IndentingXMLStreamWriter(wr
     }
 
     override infix fun String.attr(value: Any) {
-        if (this.contains(":")) {
+        if (this.isContainExternalPrefix()) {
             val tag = this.split(":")
+            if (!namespaceMapping.isEmpty() && !namespaceMapping.contains(tag[0])) {
+                throw RuntimeException("Prefix ${tag[0]} not in $namespaceMapping")
+            }
             attribute(namespaceMapping[tag[0]]!!, tag[1], value)
         } else {
             attribute(this, value)
@@ -131,7 +135,7 @@ class DslXMLStreamWriter(writer: XMLStreamWriter?) : IndentingXMLStreamWriter(wr
     }
 
     infix fun String.emptyElement(lambda: EmptyElementDsl.() -> Unit) {
-        if (this.contains(":")) {
+        if (this.isContainExternalPrefix()) {
             val tag = this.split(":")
             if (!namespaceMapping.isEmpty() && !namespaceMapping.contains(tag[0])) {
                 throw RuntimeException("Prefix ${tag[0]} not in $namespaceMapping")
